@@ -1,8 +1,6 @@
 "use strict"
 
 const gameEl = document.getElementById("game")
-const playerEl = document.getElementById("player")
-const evaluationEl = document.getElementById("evaluation")
 
 const winningArray = [
     // Horizontal
