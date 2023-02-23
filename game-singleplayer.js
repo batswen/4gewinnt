@@ -58,36 +58,76 @@ function clickedOnRow(event) {
     if (isGameOver()) {
         return
     } 
-    const best_index = minimax(2, 3)[1]
+    const best_index = minimax(2, 3, -999999999, 999999999)[1]
     set(best_index)
     isGameOver()
 }
 
-function minimax(player, depth) {
-    let best_index = 0, best_value = player === 2? -999999999 : 999999999, value
-    if (depth === 0 || !movesLeft()) {
-        best_value = evaluate()
+// function minimax(player, depth) {
+//     let best_move = 0, best_value = player === 2? -999999999 : 999999999, value
+//     const moves = generateMoves()
+//     if (depth === 0 || moves.length === 0) {
+//         best_value = evaluate()
+//     } else {
+//         for (const move of moves) {
+//             set(move, player)
+//             if (player === 2) { // max - Computer
+//                 value = minimax(1, depth - 1)[0]
+//                 if (value > best_value) {
+//                     best_value = value
+//                     best_move = move
+//                 }
+//             } else { // min - Player
+//                 value = minimax(2, depth - 1)[0]
+//                 if (value < best_value) {
+//                     best_value = value
+//                     best_move = move
+//                 }
+//             }
+//             unset(move)
+//         }
+//     }
+//     return [best_value, best_move]
+// }
+
+function minimax(player, depth, alpha, beta) {
+    let best_move = 0, value
+    const moves = generateMoves()
+    if (depth === 0 || moves.length === 0) {
+        return [evaluate(), best_move]
     } else {
-        for (let index = 0; index < 7; index++) {
-            if (set(index, player)) {
-                if (player === 2) { // max - Computer
-                    value = minimax(1, depth - 1)[0]
-                    if (value > best_value) {
-                        best_value = value
-                        best_index = index
-                    }
-                } else { // min - Player
-                    value = minimax(2, depth - 1)[0]
-                    if (value < best_value) {
-                        best_value = value
-                        best_index = index
-                    }
+        for (const move of moves) {
+            set(move, player)
+            if (player === 2) { // max - Computer
+                value = minimax(1, depth - 1, alpha, beta)[0]
+                if (value > alpha) {
+                    alpha = value
+                    best_move = move
                 }
-                unset(index)
+            } else { // min - Player
+                value = minimax(2, depth - 1, alpha, beta)[0]
+                if (value < beta) {
+                    beta = value
+                    best_move = move
+                }
+            }
+            unset(move)
+            if (alpha >= beta) {
+                break
             }
         }
     }
-    return [best_value, best_index]
+    return [player === 2? alpha : beta, best_move]
+}
+
+function generateMoves() {
+    const moves = []
+    for (let index = 0; index < 7; index++) {
+        if (get(index) === 0) {
+            moves.push(index)
+        }
+    }
+    return moves
 }
 
 function set(row, player) {
