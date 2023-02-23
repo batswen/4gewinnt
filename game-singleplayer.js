@@ -1,5 +1,7 @@
 "use strict"
 
+const maxDepthEl = document.getElementById("max-depth")
+
 const gameEl = document.getElementById("game")
 
 const winningArray = [
@@ -56,7 +58,7 @@ function clickedOnRow(event) {
     if (isGameOver()) {
         return
     } 
-    const best_index = minimax(2, 3, -999999999, 999999999)[1]
+    const best_index = minimax(2, maxDepthEl.value, -999999999, 999999999)[1]
     set(best_index)
     isGameOver()
 }
